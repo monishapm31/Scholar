@@ -1,52 +1,71 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Signup = () => {
-  const navigate = useNavigate(); // ✅ Initialize navigate
-
-  const [formData, setFormData] = useState({
+  const { role } = useParams(); // Get role from URL if available
+  const [userData, setUserData] = useState({
     name: "",
     email: "",
-    phone: "",
     password: "",
-    role: "student", // Default role
-    subject: "", // For experts
+    role: role || "student", // Default to Student if not provided
   });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (role) {
+      setUserData((prevData) => ({ ...prevData, role })); // Update role if passed via URL
+    }
+  }, [role]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify(formData)); // Save user data
-    alert("Signup successful! Please log in.");
-    navigate("/login"); // ✅ Redirect to login page after signup
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+    const userExists = existingUsers.some((user) => user.email === userData.email);
+
+    if (userExists) {
+      setError("User already exists. Please log in.");
+      return;
+    }
+
+    // Save the new user
+    const updatedUsers = [...existingUsers, userData];
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+    // Set logged-in user
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    // Redirect to dashboard
+    navigate("/dashboard");
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold text-center mb-4">Sign Up</h2>
-        <form onSubmit={handleSubmit}>
-          <input type="text" name="name" placeholder="Full Name" onChange={handleChange} className="w-full p-2 border rounded mb-2" required />
-          <input type="email" name="email" placeholder="Email" onChange={handleChange} className="w-full p-2 border rounded mb-2" required />
-          <input type="tel" name="phone" placeholder="Phone Number" onChange={handleChange} className="w-full p-2 border rounded mb-2" required />
-          <select name="role" onChange={handleChange} className="w-full p-2 border rounded mb-2">
-            <option value="student">Student</option>
-            <option value="expert">Expert</option>
-          </select>
-          {formData.role === "expert" && (
-            <input type="text" name="subject" placeholder="Expert in (e.g., AI, Physics)" onChange={handleChange} className="w-full p-2 border rounded mb-2" required />
-          )}
-          <input type="password" name="password" placeholder="Password" onChange={handleChange} className="w-full p-2 border rounded mb-2" required />
-          <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Sign Up</button>
-        </form>
-        <p className="text-center mt-4">
-          Already have an account?{" "}
-          <span className="text-blue-600 cursor-pointer" onClick={() => navigate("/login")}>Login</span>
-        </p>
-      </div>
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-lg w-96">
+        <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
+        {error && <p className="text-red-500">{error}</p>}
+
+        <label className="block mb-2">Name:</label>
+        <input type="text" name="name" value={userData.name} onChange={handleChange} className="w-full p-2 mb-2 border rounded" required />
+
+        <label className="block mb-2">Email:</label>
+        <input type="email" name="email" value={userData.email} onChange={handleChange} className="w-full p-2 mb-2 border rounded" required />
+
+        <label className="block mb-2">Password:</label>
+        <input type="password" name="password" value={userData.password} onChange={handleChange} className="w-full p-2 mb-2 border rounded" required />
+
+        <label className="block mb-2">Role:</label>
+        <select name="role" value={userData.role} onChange={handleChange} className="w-full p-2 mb-4 border rounded">
+          <option value="student">Student</option>
+          <option value="expert">Expert</option>
+        </select>
+
+        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">Sign Up</button>
+      </form>
     </div>
   );
 };
