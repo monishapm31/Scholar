@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const LoginPage = () => {
+const Login = () => {
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -58,4 +58,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;

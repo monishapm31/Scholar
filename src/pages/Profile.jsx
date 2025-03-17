@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
 
 const Profile = () => {
   const [user, setUser] = useState({
@@ -27,20 +25,16 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex">
-      {user && <Sidebar user={user} />}
-      <div className="flex-1">
-        <Navbar />
-        <div className="p-6 max-w-lg mx-auto">
-          <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
-          <input type="text" name="name" value={user.name} onChange={handleChange} className="w-full p-2 border rounded mb-2" disabled />
-          <input type="email" name="email" value={user.email} onChange={handleChange} className="w-full p-2 border rounded mb-2" disabled />
-          <input type="text" name="phone" value={user.phone} onChange={handleChange} className="w-full p-2 border rounded mb-2" disabled />
-          <input type="text" name="education" placeholder="Education" value={user.education} onChange={handleChange} className="w-full p-2 border rounded mb-2" />
-          <input type="text" name="skills" placeholder="Skills" value={user.skills} onChange={handleChange} className="w-full p-2 border rounded mb-2" />
-          <textarea name="bio" placeholder="Bio" value={user.bio} onChange={handleChange} className="w-full p-2 border rounded mb-2"></textarea>
-          <button onClick={handleSave} className="w-full bg-green-500 text-white p-2 rounded">Save</button>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-2xl font-bold mb-4 text-center">Complete Profile</h2>
+        <input type="text" name="name" value={user.name} onChange={handleChange} className="w-full p-2 border rounded mb-2" disabled />
+        <input type="email" name="email" value={user.email} onChange={handleChange} className="w-full p-2 border rounded mb-2" disabled />
+        <input type="text" name="phone" value={user.phone} onChange={handleChange} className="w-full p-2 border rounded mb-2" disabled />
+        <input type="text" name="education" placeholder="Education" value={user.education} onChange={handleChange} className="w-full p-2 border rounded mb-2" />
+        <input type="text" name="skills" placeholder="Skills" value={user.skills} onChange={handleChange} className="w-full p-2 border rounded mb-2" />
+        <textarea name="bio" placeholder="Bio" value={user.bio} onChange={handleChange} className="w-full p-2 border rounded mb-2"></textarea>
+        <button onClick={handleSave} className="w-full bg-green-500 text-white p-2 rounded">Save</button>
       </div>
     </div>
   );
